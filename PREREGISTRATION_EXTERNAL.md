@@ -68,6 +68,11 @@ edit it afterwards; add dated amendments at the end instead.
   784d452 and 1be6786 for the two reviewer forms) no longer exist on GitHub. The text of the registration and of
   both amendments is unchanged, and no external image had been passed through a classifier at the time of the
   new commit.
+- **Amendment 3 (2026-11-23, before any external inference):** Mpox2025 is dropped from the external test. Its only
+  download link (Google Drive file 1P3ZZ01TSJS4v9uhBy0USzfbMXWbO8QIh, given in the authors' repository
+  github.com/AAM-Mustahid/MicroMPoxNet) returns "file does not exist", and no other copy could be found. No Mpox2025
+  image was ever downloaded or classified. The external test uses MPox-Vision and MCSI; all hypotheses, metrics and
+  tests stay as registered and are computed over these two sets.
 
 ## Note on development-set design (fixed before this commit)
 - LODO families: two development sources are held out together when more than 50% of either one's images fall in duplicate groups shared with the other (MSLD and MSLD v2.0 are always one family). Smaller overlaps are removed from the training side of each fold. This threshold was set after inspecting the overlap matrix and before any model result was produced, because a 5% threshold merged 7 of 11 sources into one family.

@@ -35,8 +35,7 @@ into stages that can be resumed across sessions.
    Kaggle secret `HF_TOKEN`. Without it the model is skipped.
 4. Clone this repository into `/kaggle/working/code` and run
    `bash run_all.sh setup`. This fetches the two GitHub-only datasets, MPox-Vision
-   (Mendeley), MCSI (Zenodo) and the PanDerm weights. Mpox2025 is shared through Google Drive
-   and may have to be downloaded by hand.
+   (Mendeley), MCSI (Zenodo) and the PanDerm weights.
 5. Run the remaining stages in order. `index/dataset_report.csv` lists every dataset with the
    number of images found; `unlabelled_dirs` shows folders whose class could not be read.
 
@@ -86,5 +85,7 @@ Changes are added as dated amendments at the end of the file.
 
 ## Licence
 
-Code: MIT. Each dataset keeps its own licence; Mpox2025 is for research and academic use only,
-and PanDerm weights are CC BY-NC-ND 4.0.
+Code: MIT. Each dataset keeps its own licence; PanDerm weights are CC BY-NC-ND 4.0.
+
+Mpox2025 was registered as a third external set but is no longer downloadable; see Amendment 3
+in `PREREGISTRATION_EXTERNAL.md`.
