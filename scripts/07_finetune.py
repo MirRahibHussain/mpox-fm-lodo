@@ -54,6 +54,13 @@ if __name__ == "__main__":
     ap.add_argument("--max-hours", type=float, default=0, help="do not start a run after this many hours")
     ap.add_argument("--smoke", action="store_true")
     a = ap.parse_args()
+    # run_budget_hours.txt (repository root) caps the session, e.g. when little GPU quota is left this week
+    cap_fn = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "run_budget_hours.txt")
+    if os.path.exists(cap_fn):
+        cap = float(open(cap_fn).read().split()[0])
+        if not a.max_hours or cap < a.max_hours:
+            print(f"time budget capped at {cap} h by run_budget_hours.txt")
+            a.max_hours = cap
 
     index = io.load_index()
     cfg = TrainConfig(epochs=a.epochs, dermnet_cap=a.dermnet_cap)
