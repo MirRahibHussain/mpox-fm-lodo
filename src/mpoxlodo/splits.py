@@ -155,11 +155,23 @@ def assert_no_leakage(split: dict, index: pd.DataFrame) -> None:
     assert not (g_va & g_tr_only), f"{split['name']}: groups cross train and validation"
 
 
-def save_splits(splits: list[dict], out_dir: str) -> None:
+def save_splits(splits: list[dict], out_dir: str) -> list[str]:
+    """Write the splits and move split files left over from an earlier run (for
+    example under another duplicate rule) to <out_dir>_superseded, so later
+    stages never pick them up. Returns the names that were moved."""
+    import shutil
     os.makedirs(out_dir, exist_ok=True)
+    keep = {s["name"] for s in splits}
+    stale = [fn[:-5] for fn in os.listdir(out_dir) if fn.endswith(".json") and fn[:-5] not in keep]
+    if stale:
+        dest = out_dir.rstrip("/") + "_superseded"
+        os.makedirs(dest, exist_ok=True)
+        for name in stale:
+            shutil.move(os.path.join(out_dir, name + ".json"), os.path.join(dest, name + ".json"))
     for s in splits:
         with open(os.path.join(out_dir, s["name"] + ".json"), "w") as f:
             json.dump(s, f)
+    return stale
 
 
 def load_splits(out_dir: str, protocol: Optional[str] = None, task: Optional[str] = None) -> list[dict]:

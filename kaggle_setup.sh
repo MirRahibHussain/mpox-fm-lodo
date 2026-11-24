@@ -32,6 +32,20 @@ fi
 if [ ! -d mpox2025 ]; then
   gdown -q 1P3ZZ01TSJS4v9uhBy0USzfbMXWbO8QIh -O mpox2025.zip && mkdir -p mpox2025 && unzip -q mpox2025.zip -d mpox2025 && rm mpox2025.zip || echo "download failed: Mpox2025 (download it manually from the authors' GitHub link)"
 fi
+# Check the Hugging Face token without printing it (MedSigLIP is gated)
+python - <<'PY' || true
+import os
+t = (os.environ.get("HF_TOKEN") or "").strip()
+print(f"HF token: length {len(t)}, starts with hf_: {t.startswith('hf_')}")
+if t:
+    try:
+        from huggingface_hub import whoami, auth_check
+        print("HF user:", whoami(token=t).get("name"))
+        auth_check("google/medsiglip-448", token=t)
+        print("HF access to google/medsiglip-448: ok")
+    except Exception as e:
+        print("HF check failed:", type(e).__name__, str(e).splitlines()[0][:200])
+PY
 # PanDerm ViT-L/16 weights (CC BY-NC-ND 4.0, academic use) from the authors' Google Drive link
 if [ ! -f /tmp/panderm/panderm_ll_data6_checkpoint-499.pth ]; then
   mkdir -p /tmp/panderm

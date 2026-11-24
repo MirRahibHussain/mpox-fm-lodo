@@ -81,7 +81,7 @@ def load_backbone(key: str):
             print(f"[{key}] timm load failed ({e}); trying Hugging Face {spec.fallback}")
             from transformers import AutoModel
 
-            hf = AutoModel.from_pretrained(spec.fallback, token=os.environ.get("HF_TOKEN"))
+            hf = AutoModel.from_pretrained(spec.fallback, token=(os.environ.get("HF_TOKEN") or "").strip() or None)
 
             class HFPool(nn.Module):
                 def __init__(self, mdl):
@@ -121,7 +121,7 @@ def load_backbone(key: str):
 
     if spec.kind == "hf_siglip":
         from transformers import AutoModel, AutoTokenizer
-        token = os.environ.get("HF_TOKEN")
+        token = (os.environ.get("HF_TOKEN") or "").strip() or None
         full = AutoModel.from_pretrained(spec.ident, token=token)
         tok = AutoTokenizer.from_pretrained(spec.ident, token=token)
 

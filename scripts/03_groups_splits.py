@@ -110,7 +110,23 @@ if __name__ == "__main__":
         dest = preds_dir + f"_superseded_{old}"
         shutil.move(preds_dir, dest)
         print(f"splits changed ({old} -> {digest}): previous predictions moved to {dest}")
-    splits.save_splits(all_splits, io.p("splits"))
+    stale = splits.save_splits(all_splits, io.p("splits"))
+    if stale:
+        print(f"moved {len(stale)} split files from an earlier run to splits_superseded: {', '.join(sorted(stale))}")
+    # predictions made on a split that no longer exists are moved aside as well
+    keep = {s["name"] for s in all_splits}
+    moved = 0
+    if os.path.isdir(preds_dir):
+        for root, _, files in os.walk(preds_dir):
+            for fn in files:
+                if fn.endswith(".csv") and fn.split("__s")[0] not in keep:
+                    rel = os.path.relpath(os.path.join(root, fn), preds_dir)
+                    dst = os.path.join(preds_dir + "_stale_splits", rel)
+                    os.makedirs(os.path.dirname(dst), exist_ok=True)
+                    shutil.move(os.path.join(root, fn), dst)
+                    moved += 1
+    if moved:
+        print(f"moved {moved} prediction files for splits that no longer exist to preds_stale_splits")
     with open(hash_fn, "w") as f:
         f.write(digest)
     summ = splits.summarize(all_splits, index)
